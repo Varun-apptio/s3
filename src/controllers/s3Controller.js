@@ -1,4 +1,4 @@
-const {  fetchFileFromS3 } = require("../services/s3Service");
+const {  fetchFileFromS3 ,getBucketDetails} = require("../services/s3Service");
 
 
 
@@ -16,4 +16,24 @@ const fetchFile = async (req, res) => {
   }
 };
 
-module.exports = {  fetchFile };
+const getBucketDetailsHandler = async (req, res) => {
+  const { bucketName } = req.query;
+
+  // Ensure that bucket name is provided
+  if (!bucketName) {
+    return res.status(400).json({ error: 'Bucket name is required' });
+  }
+
+  try {
+    // Fetch the details of the bucket
+    const bucketDetails = await getBucketDetails(bucketName);
+    return res.json(bucketDetails);
+  } catch (error) {
+    console.error("Error fetching bucket details:", error);
+    return res.status(500).json({ error: 'Error fetching bucket details' });
+  }
+};
+
+
+
+module.exports = {  fetchFile ,getBucketDetailsHandler};
