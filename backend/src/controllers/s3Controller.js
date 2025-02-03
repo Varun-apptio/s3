@@ -17,7 +17,7 @@ const fetchFile = async (req, res) => {
 };
 
 const getBucketDetailsHandler = async (req, res) => {
-  const { bucketName } = req.query;
+  const { bucketName, prefix = "" } = req.query; 
 
   // Ensure that bucket name is provided
   if (!bucketName) {
@@ -26,7 +26,7 @@ const getBucketDetailsHandler = async (req, res) => {
 
   try {
     // Fetch the details of the bucket
-    const bucketDetails = await getBucketDetails(bucketName);
+    const bucketDetails = await getBucketDetails(bucketName,prefix);
     return res.json(bucketDetails);
   } catch (error) {
     console.error("Error fetching bucket details:", error);
