@@ -1,4 +1,4 @@
- 1. to fetch a file and to download
+1. to fetch a file and to downloading
 http://localhost:3000/api/s3/fetch-file?filename=docstore_arch.pdf
 
 2. to fetch the bucket details and bucket content
