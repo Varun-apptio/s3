@@ -15,30 +15,27 @@ const fetchFileFromS3 = async (bucketName, key, res) => {
   }
 };
 
-async function getBucketDetails(bucketName) {
-  try {
-    const command = new ListObjectsV2Command({ Bucket: bucketName });
-    const data = await s3Client.send(command); // Make the request to S3
-    
-      // Calculate the total size of all files in the bucket
-      let totalSize = 0;
-      data.Contents.forEach(item => {
-          totalSize += item.Size; // Add the size of each file
-      });
+async function getBucketDetails(bucketName,prefix = "") {
+  
+  const params = { Bucket: bucketName, Prefix: prefix };
+  let totalFiles = 0;
+  let totalSize = 0;
 
-      return {
-          bucketName,
-          totalFiles: data.Contents.length,
-          totalSize,
-          files: data.Contents.map(item => ({
-              key: item.Key,
-              size: item.Size,
-              lastModified: item.LastModified,
-          }))
-      };
+  try {
+    const data = await s3Client.send(new ListObjectsV2Command(params));
+   console.log(data);
+   
+    if (data.Contents) {
+      const files = data.Contents.filter(obj => !(obj.Key.endsWith("/") && obj.Size === 0));
+
+      totalFiles = files.length;
+      totalSize = data.Contents.reduce((acc, obj) => acc + obj.Size, 0);
+    }
+
+    return { totalFiles, totalSize };
   } catch (error) {
-      console.error("Error fetching bucket details:", error);
-      throw error;  // Propagate error to be handled by the controller
+    console.error("Error fetching S3 data:", error);
+    throw new Error("Error fetching S3 data");
   }
 }
 
