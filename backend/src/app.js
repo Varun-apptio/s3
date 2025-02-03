@@ -6,7 +6,11 @@ const s3Routes = require("./routes/s3Routes");
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173/", // URL of your React frontend
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    credentials: true 
+}));
 app.use(express.json());
 
 // Mount S3 Routes
