@@ -7,8 +7,8 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:5173/", // URL of your React frontend
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    origin: "http://localhost:5173", 
+    methods: ["GET"], 
     credentials: true 
 }));
 app.use(express.json());
