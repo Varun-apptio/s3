@@ -10,11 +10,17 @@ const BucketDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [prefix, setPrefix] = useState();
+
+
   // to fetch bucket details , use axios later
   useEffect(() => {
     const fetchBucketDetails = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/s3/bucket-details?bucketName=s3-docstore');
+
+        const response = await fetch(`http://localhost:3000/api/s3/bucket-details?bucketName=s3-docstore&prefix=${prefix}/`);
+
+
        //err
         if (!response.ok) {
           throw new Error('Failed to fetch data');
@@ -30,10 +36,15 @@ const BucketDetails = () => {
     };
 
     fetchBucketDetails();
-  }, []); //only when looded first
+
+  }, [prefix]); //only when looded first
 
 
-  const sortedFiles = bucketData?.files.sort((a, b) => b.size - a.size); // Sorting by size in descending order
+ 
+
+
+
+
 
   // If loading
   if (loading) {
@@ -46,28 +57,20 @@ const BucketDetails = () => {
 
   return (
     <div className="container">
+
+       <input
+        type="text"
+        value={prefix}
+        onChange={(e) => setPrefix(e.target.value)}
+        
+        placeholder="Enter the uuid"
+        className='search-input'
+      />
+
       <h2>Bucket Details: {bucketData?.bucketName}</h2>
       <p>Total Files: {bucketData?.totalFiles}</p>
       <p>Total Size: {bytesToMB(bucketData?.totalSize)} MB</p>
 
-      <table border="1" cellPadding="8" cellSpacing="0" style={{ width: '100%', marginTop: '20px' }}>
-        <thead>
-          <tr>
-            <th>File Name</th>
-            <th>Size (MB)</th>
-            <th>Last Modified</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedFiles?.map((file, index) => (
-            <tr key={index}>
-              <td>{file.key}</td>
-              <td>{bytesToMB(file.size)} MB</td>
-              <td>{new Date(file.lastModified).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 };
