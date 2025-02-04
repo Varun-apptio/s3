@@ -9,13 +9,18 @@ const BucketDetails = () => {
   const [bucketData, setBucketData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [prefix, setPrefix] = useState();
+
 
   // to fetch bucket details , use axios later
   useEffect(() => {
     const fetchBucketDetails = async () => {
       try {
+
         const response = await fetch(`http://localhost:3000/api/s3/bucket-details?bucketName=s3-docstore&prefix=${prefix}/`);
+
+
        //err
         if (!response.ok) {
           throw new Error('Failed to fetch data');
@@ -31,10 +36,15 @@ const BucketDetails = () => {
     };
 
     fetchBucketDetails();
+
   }, [prefix]); //only when looded first
 
 
  
+
+
+
+
 
   // If loading
   if (loading) {
@@ -47,6 +57,7 @@ const BucketDetails = () => {
 
   return (
     <div className="container">
+
        <input
         type="text"
         value={prefix}
@@ -55,10 +66,10 @@ const BucketDetails = () => {
         placeholder="Enter the uuid"
         className='search-input'
       />
+
       <h2>Bucket Details: {bucketData?.bucketName}</h2>
       <p>Total Files: {bucketData?.totalFiles}</p>
       <p>Total Size: {bytesToMB(bucketData?.totalSize)} MB</p>
-
 
     </div>
   );
